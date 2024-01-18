@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-require_once(__DIR__ . '/isConnect.php');
-require_once(__DIR__ . '/config/mysql.php');
+require_once(__DIR__ . '/is_connect.php');
+require_once(__DIR__ . '/config/my_sql.php');
 require_once(__DIR__ . '/databaseconnect.php');
 
 $postData = $_POST;
@@ -28,7 +28,7 @@ $insertRecipe = $mysqlClient->prepare('INSERT INTO comments(comment, recipe_id, 
 $insertRecipe->execute([
     'comment' => $comment,
     'recipe_id' => $recipeId,
-    'user_id' => $_SESSION['LOGGED_USER']['user_id'],
+    'user_id' => $_SESSION['loggedUser']['user_id'],
 ]);
 
 ?>

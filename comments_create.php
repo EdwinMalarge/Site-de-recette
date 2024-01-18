@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__ . '/isConnect.php');
+require_once(__DIR__ . '/is_connect.php');
 ?>
 
 <form action="comments_post_create.php" method="POST">
