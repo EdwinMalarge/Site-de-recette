@@ -1,11 +1,5 @@
 <?php
 $postData = $_POST;
-$fileInfo = pathinfo($_FILES["screenshot"]["name"]);
-
-$extension = $fileInfo["extension"];
-$allowedExtensions = ["jpg", "jpeg", "gif", "png"];
-$path = __DIR__ . "/uploads";
-$isFileLoaded = false;
 
 if (
     !isset($postData['email'])
@@ -17,26 +11,34 @@ if (
     return;
 }
 
-if (isset($_FILES["screenshot"]) && $_FILES["scrennshot"]["error"] === 0) {
-
-    if ($_FILES["screenshot"]["size"] > 1000000) {
-        echo ("Le fichier est trop volumineux pour être envoyé");
+$isFileLoaded = false;
+// Testons si le fichier a bien été envoyé et s'il n'y a pas des erreurs
+if (isset($_FILES['screenshot']) && $_FILES['screenshot']['error'] === 0) {
+    // Testons, si le fichier est trop volumineux
+    if ($_FILES['screenshot']['size'] > 1000000) {
+        echo "L'envoi n'a pas pu être effectué, erreur ou image trop volumineuse";
         return;
     }
 
-    if (in_array($extension, $allowedExtensions)) {
-        echo ("L'extension {$extension} n'est pas autorisée pour cet envoi");
+    // Testons, si l'extension n'est pas autorisée
+    $fileInfo = pathinfo($_FILES['screenshot']['name']);
+    $extension = $fileInfo['extension'];
+    $allowedExtensions = ['jpg', 'jpeg', 'gif', 'png'];
+    if (!in_array($extension, $allowedExtensions)) {
+        echo "L'envoi n'a pas pu être effectué, l'extension {$extension} n'est pas autorisée";
         return;
     }
 
+    // Testons, si le dossier uploads est manquant
+    $path = __DIR__ . '/uploads/';
     if (!is_dir($path)) {
-        echo ("Le fichier n'as pas pu être receptionné car le dossier 'upload' est manquant, merci de contacter un administrateur");
+        echo "L'envoi n'a pas pu être effectué, le dossier uploads est manquant";
         return;
     }
 
-    move_uploaded_file($_FILES["scrennshot"]["tmp_name"], $path . basename($_FILES["screenshot"]["name"]));
+    // On peut valider le fichier et le stocker définitivement
+    move_uploaded_file($_FILES['screenshot']['tmp_name'], $path . basename($_FILES['screenshot']['name']));
     $isFileLoaded = true;
-
 }
 ?>
 
@@ -64,7 +66,7 @@ if (isset($_FILES["screenshot"]) && $_FILES["scrennshot"]["error"] === 0) {
                     <?php echo ($postData['email']); ?>
                 </p>
                 <p class="card-text"><b>Message</b> :
-                    <?php echo strip_tags($postData['message']); ?>
+                    <?php echo (strip_tags($postData['message'])); ?>
                 </p>
                 <?php if ($isFileLoaded): ?>
                     <div class="alert alert-success" role="alert">

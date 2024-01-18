@@ -7,7 +7,7 @@ require_once(__DIR__ . '/databaseconnect.php');
 
 $postData = $_POST;
 
-// Vérification du formulaire
+// Vérification du formulaire soumis
 if (
     empty($postData['title'])
     || empty($postData['recipe'])
@@ -21,13 +21,13 @@ if (
 $title = trim(strip_tags($postData['title']));
 $recipe = trim(strip_tags($postData['recipe']));
 
-// Insertion en base
+// Faire l'insertion en base
 $insertRecipe = $mysqlClient->prepare('INSERT INTO recipes(title, recipe, author, is_enabled) VALUES (:title, :recipe, :author, :is_enabled)');
 $insertRecipe->execute([
     'title' => $title,
     'recipe' => $recipe,
     'is_enabled' => 1,
-    'author' => $_SESSION['LOGGED_USER']['email'],
+    'author' => $_SESSION['loggedUser']['email'],
 ]);
 
 ?>
@@ -47,6 +47,7 @@ $insertRecipe->execute([
     <div class="container">
 
         <?php require_once(__DIR__ . '/header.php'); ?>
+        <!-- MESSAGE DE SUCCES -->
         <h1>Recette ajoutée avec succès !</h1>
 
         <div class="card">
@@ -56,7 +57,7 @@ $insertRecipe->execute([
                     <?php echo $title; ?>
                 </h5>
                 <p class="card-text"><b>Email</b> :
-                    <?php echo $_SESSION['LOGGED_USER']['email']; ?>
+                    <?php echo $_SESSION['loggedUser']['email']; ?>
                 </p>
                 <p class="card-text"><b>Recette</b> :
                     <?php echo $recipe; ?>
